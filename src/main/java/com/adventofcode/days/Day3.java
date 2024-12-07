@@ -58,5 +58,12 @@ public class Day3 extends AdventOfCode implements IAdventOfCode {
             }
         }
         System.out.println(somma);
+
+        // Regex per catturare i comandi validi
+        Pattern pattern2 = Pattern.compile("( do\\(\\)|don't\\(\\)|mul\\((\\d+),(\\d+)\\) )" );
+        Matcher matcher2 = pattern.matcher(content);
+        while (matcher.find()) {
+            System.out.println(matcher.group(1));
+        }
     }
 }
