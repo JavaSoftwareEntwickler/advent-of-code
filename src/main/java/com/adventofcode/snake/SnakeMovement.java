@@ -15,11 +15,16 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     private int dx = 0; // Direzione orizzontale
     private int dy = 0; // Direzione verticale
 
+    private int score = 0; // Punteggio del gioco
+    private Cibo cibo; // Oggetto che rappresenta il cibo
+
     public SnakeMovement() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.WHITE);
         this.setFocusable(true);
         this.addKeyListener(this);
+
+        cibo = new Cibo(WIDTH, HEIGHT); // Inizializza il cibo
 
         Timer timer = new Timer(100, this); // Timer per aggiornare il movimento
         timer.start();
@@ -28,6 +33,7 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent e) {
         move();
+        checkCollisionWithFood(); // Verifica la collisione con il cibo
         repaint();
     }
 
@@ -42,11 +48,27 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         if (y > HEIGHT - 10) y = HEIGHT - 10;
     }
 
+    private void checkCollisionWithFood() {
+        // Verifica se la testa del serpente mangia il cibo
+        if (x == cibo.getX() && y == cibo.getY()) {
+            score++; // Incrementa il punteggio
+            cibo.reset(WIDTH, HEIGHT); // Rigenera il cibo in una nuova posizione
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.RED);
-        g.drawString("X", x, y); // Disegna la "x"
+        //g.drawString("X", x, y); // Disegna la "x"
+        g.fillRect(x, y, 10, 10); // Usa un quadrato per la testa del serpente
+        // Disegna il cibo
+        cibo.draw(g); // Disegna il cibo
+
+
+        // Mostra il punteggio
+        g.setColor(Color.BLACK);
+        g.drawString("Punteggio: " + score, 10, 20); // Mostra il punteggio in alto a sinistra
     }
 
     @Override
