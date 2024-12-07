@@ -2,6 +2,7 @@ package main.java.com.adventofcode.snake;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.LinkedList;
 import javax.swing.*;
 
 public class SnakeMovement extends JPanel implements ActionListener, KeyListener {
@@ -17,6 +18,7 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
 
     private int score = 0; // Punteggio del gioco
     private Cibo cibo; // Oggetto che rappresenta il cibo
+    private LinkedList<Point> body; // Corpo del serpente
 
     public SnakeMovement() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -25,6 +27,9 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         this.addKeyListener(this);
 
         cibo = new Cibo(WIDTH, HEIGHT); // Inizializza il cibo
+
+        body = new LinkedList<>(); // Corpo iniziale del serpente
+        body.add(new Point(x, y)); // Aggiungi il primo segmento (la testa)
 
         Timer timer = new Timer(100, this); // Timer per aggiornare il movimento
         timer.start();
@@ -38,8 +43,19 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     }
 
     private void move() {
-        x += dx;
-        y += dy;
+        // Aggiungi un nuovo segmento all'inizio della lista, che rappresenta la testa del serpente
+        body.addFirst(new Point(x + dx, y + dy));
+        // Se il serpente non ha mangiato il cibo, rimuovi l'ultimo segmento
+        if (body.size() > score + 1) {
+            body.removeLast();
+        }
+
+        // Imposta la nuova posizione della testa
+        x = body.getFirst().x;
+        y = body.getFirst().y;
+
+        //x += dx;
+        //y += dy;
 
         // Controlla i confini della finestra
         if (x < 0) x = 0;
@@ -59,9 +75,17 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        // Disegna il corpo del serpente
         g.setColor(Color.RED);
+        for (Point p : body) {
+            g.fillRect(p.x, p.y, 10, 10); // Disegna ogni segmento del corpo
+        }
+        //Commento perchè ho disegnato il corpo del serpente
+        //g.setColor(Color.RED);
         //g.drawString("X", x, y); // Disegna la "x"
-        g.fillRect(x, y, 10, 10); // Usa un quadrato per la testa del serpente
+        //g.fillRect(x, y, 10, 10); // Usa un quadrato per la testa del serpente
+
         // Disegna il cibo
         cibo.draw(g); // Disegna il cibo
 
