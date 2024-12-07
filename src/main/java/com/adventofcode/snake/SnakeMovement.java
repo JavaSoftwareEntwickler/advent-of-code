@@ -62,11 +62,12 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         //x += dx;
         //y += dy;
 
-        // Controlla i confini della finestra
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        if (x > WIDTH - 10) x = WIDTH - 10; // Evita che esca dalla finestra
-        if (y > HEIGHT - 10) y = HEIGHT - 10;
+//        // Controlla i confini della finestra
+//        if (x < 0) x = 0;
+//        if (y < 0) y = 0;
+//
+//        if (x > WIDTH - 10) x = WIDTH - 10; // Evita che esca dalla finestra
+//        if (y > HEIGHT - 10) y = HEIGHT - 10;
     }
 
     private void checkCollisionWithFood() {
@@ -79,7 +80,7 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
 
     private void checkCollisionWithWalls() {
         // Verifica la collisione con i bordi della finestra
-        if (x <= 0 || y <= 0 || x+STEP  >= WIDTH || y+STEP  >= HEIGHT) {
+        if (x < 0 || y < 0 || x  >= WIDTH || y  >= HEIGHT) {
             gameOver = true; // Attiva il flag di game over
         }
     }
