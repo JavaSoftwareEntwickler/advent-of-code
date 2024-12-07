@@ -43,6 +43,7 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
             move();
             checkCollisionWithFood(); // Verifica la collisione con il cibo
             checkCollisionWithWalls(); // Verifica la collisione con i bordi
+            checkCollisionWithSelf(); // Verifica la collisione con il corpo
             repaint();
         }
     }
@@ -82,6 +83,17 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         // Verifica la collisione con i bordi della finestra
         if (x < 0 || y < 0 || x  >= WIDTH || y  >= HEIGHT) {
             gameOver = true; // Attiva il flag di game over
+        }
+    }
+
+    private void checkCollisionWithSelf() {
+        // Verifica se la testa del serpente tocca uno dei segmenti del corpo
+        for (int i = 1; i < body.size(); i++) {
+            Point p = body.get(i);
+            if (x == p.x && y == p.y) {
+                gameOver = true; // Se il serpente si tocca, game over
+                break;
+            }
         }
     }
 
