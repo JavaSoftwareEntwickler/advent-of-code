@@ -20,6 +20,8 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     private Cibo cibo; // Oggetto che rappresenta il cibo
     private LinkedList<Point> body; // Corpo del serpente
 
+    private boolean gameOver = false; // Flag per determinare se il gioco è finito
+
     public SnakeMovement() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.WHITE);
@@ -37,9 +39,12 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        move();
-        checkCollisionWithFood(); // Verifica la collisione con il cibo
-        repaint();
+        if(!gameOver){
+            move();
+            checkCollisionWithFood(); // Verifica la collisione con il cibo
+            checkCollisionWithWalls(); // Verifica la collisione con i bordi
+            repaint();
+        }
     }
 
     private void move() {
@@ -72,9 +77,25 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    private void checkCollisionWithWalls() {
+        // Verifica la collisione con i bordi della finestra
+        if (x <= 0 || y <= 0 || x+STEP  >= WIDTH || y+STEP  >= HEIGHT) {
+            gameOver = true; // Attiva il flag di game over
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        if (gameOver) {
+            // Mostra il messaggio "Game Over" se il gioco è finito
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.drawString("Game Over", WIDTH / 4, HEIGHT / 2);
+            g.drawString("Punteggio: " + score, WIDTH / 3, HEIGHT / 2 + 40);
+            return;
+        }
 
         // Disegna il corpo del serpente
         g.setColor(Color.RED);
@@ -97,6 +118,7 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if (gameOver) return; // Non permette di muoversi se il gioco è finito
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_UP) {
             dx = 0;
