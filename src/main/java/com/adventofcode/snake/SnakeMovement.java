@@ -10,8 +10,8 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     private int x = 50; // Posizione iniziale della "x"
     private int y = 50;
     private final int STEP = 10; // Incremento di movimento
-    private final int WIDTH = 400; // Larghezza della finestra
-    private final int HEIGHT = 400; // Altezza della finestra
+    private final int WIDTH = 200; // Larghezza della finestra
+    private final int HEIGHT = 300; // Altezza della finestra
 
     private int dx = 0; // Direzione orizzontale
     private int dy = 0; // Direzione verticale
@@ -21,8 +21,13 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     private LinkedList<Point> body; // Corpo del serpente
 
     private boolean gameOver = false; // Flag per determinare se il gioco è finito
+    private JButton restartButton; // Pulsante per rigiocare
 
     public SnakeMovement() {
+        init();
+    }
+    void init(){
+
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.WHITE);
         this.setFocusable(true);
@@ -33,10 +38,15 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         body = new LinkedList<>(); // Corpo iniziale del serpente
         body.add(new Point(x, y)); // Aggiungi il primo segmento (la testa)
 
+        restartButton = new JButton("Rigioca");
+        restartButton.setBounds(WIDTH / 4, HEIGHT / 2, 100, 30);
+        restartButton.setVisible(false); // Impostiamo invisibile inizialmente
+        this.add(restartButton);
+        restartButton.addActionListener(e -> restartGame());
+
         Timer timer = new Timer(100, this); // Timer per aggiornare il movimento
         timer.start();
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(!gameOver){
@@ -45,6 +55,11 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
             checkCollisionWithWalls(); // Verifica la collisione con i bordi
             checkCollisionWithSelf(); // Verifica la collisione con il corpo
             repaint();
+        }
+        else{
+            if (!restartButton.isVisible()) {
+                restartButton.setVisible(true); // Rendi visibile il pulsante per il riavvio
+            }
         }
     }
 
@@ -97,6 +112,17 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    private void restartGame() {
+        // Chiudi la finestra corrente
+        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);  // Ottieni la finestra che contiene il pannello
+        if (topFrame != null) {
+            topFrame.dispose(); // Chiudi la finestra
+        }
+
+        // Avvia una nuova finestra di gioco
+        startGame();  // Avvia una nuova finestra di gioco
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -104,9 +130,12 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
         if (gameOver) {
             // Mostra il messaggio "Game Over" se il gioco è finito
             g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            g.drawString("Game Over", WIDTH / 4, HEIGHT / 2);
-            g.drawString("Punteggio: " + score, WIDTH / 3, HEIGHT / 2 + 40);
+            // Imposta il font in modo responsivo
+            int fontSize = Math.max(WIDTH / 15, 20);
+            g.setFont(new Font("Arial", Font.BOLD, fontSize));
+
+            g.drawString("Game Over", WIDTH / 8, HEIGHT / 8);
+            g.drawString("Punteggio: " + score, WIDTH / 5 - 20, HEIGHT / 5 );
             return;
         }
 
@@ -157,13 +186,18 @@ public class SnakeMovement extends JPanel implements ActionListener, KeyListener
     public void keyTyped(KeyEvent e) {
         // Non serve per questo esempio
     }
-
-    public static void main(String[] args) {
+    public void startGame() {
         JFrame frame = new JFrame("Snake Movement");
         SnakeMovement panel = new SnakeMovement();
         frame.add(panel);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+    }
+
+
+    public static void main(String[] args) {
+        new SnakeMovement().startGame();
     }
 }
