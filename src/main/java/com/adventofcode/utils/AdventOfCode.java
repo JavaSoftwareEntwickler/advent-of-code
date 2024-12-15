@@ -8,7 +8,7 @@ public class AdventOfCode {
     public AdventOfCode(String nomeFile){
         fileUtils = new FileUtils();
         fileProperties = new FileProperties();
-        this.path = fileProperties.getPath() + "/" + nomeFile;
+        this.path = fileProperties.getPath("path") + "/" + nomeFile;
     }
 
     public String getPath(){
